@@ -1,0 +1,3 @@
+Order.API --> http://localhost:5297, https://localhost:7037
+Payment.API --> http://localhost:5172, http://localhost:5172
+Stock.API --> http://localhost:5248, https://localhost:7239
