@@ -25,7 +25,7 @@ namespace Payment.API.Consumer
             else
             {
                 _logger.LogInformation($"{context.Message.Payment.TotalPrice} TL was not withhdraw from credit card for  user id = {context.Message.BuyerId}");
-                await _publishEndpoint.Publish(new PaymentFailedEvent { BuyerId = context.Message.BuyerId, OrderId = context.Message.OrderId, Message = "not enough balance" });
+                await _publishEndpoint.Publish(new PaymentFailedEvent { BuyerId = context.Message.BuyerId, OrderId = context.Message.OrderId, Message = "not enough balance",OrderItems=context.Message.OrderItems });
             }
         }
     }
