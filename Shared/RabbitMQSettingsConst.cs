@@ -16,5 +16,6 @@ namespace Shared
 
         public const string OrderPaymentFailedEventQueueName = "order-payment-failed-queue";
 
+        public const string OrderStockNotReservedQueueName = "order-stock-not-reserved-queue";
     }
 }
