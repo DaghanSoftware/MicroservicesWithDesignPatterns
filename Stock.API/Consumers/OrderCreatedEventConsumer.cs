@@ -56,6 +56,7 @@ namespace Stock.API.Consumers
                     OrderId=context.Message.OrderId,
                     Message = "Not enought stock"
                 });
+                _logger.LogInformation($" Not Enough Stock  Buyer Id : {context.Message.BuyerId}");
             }
         }
     }
