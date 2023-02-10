@@ -9,6 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddMassTransit(x => {
     x.AddConsumer<PaymentCompletedEventConsumer>();
+    x.AddConsumer<PaymentFailedEventConsumer>();
     x.UsingRabbitMq((context, cfg) =>
     {
         cfg.Host(builder.Configuration.GetConnectionString("RabbitMQ"));
@@ -16,6 +17,11 @@ builder.Services.AddMassTransit(x => {
         cfg.ReceiveEndpoint(RabbitMQSettingsConst.OrderPaymentCompletedEventQueueName, e =>
         {
             e.ConfigureConsumer<PaymentCompletedEventConsumer>(context);
+        });
+
+        cfg.ReceiveEndpoint(RabbitMQSettingsConst.OrderPaymentFailedEventQueueName, e =>
+        {
+            e.ConfigureConsumer<PaymentFailedEventConsumer>(context);
         });
     });
 });
