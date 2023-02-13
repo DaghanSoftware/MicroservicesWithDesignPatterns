@@ -8,6 +8,11 @@ using System.Threading.Tasks;
 
 namespace SagaStateMachineWorkerService.Models
 {
+    //	State Machine yapılanmasını bizlere sunan sınıftır.
+    //	Sorumluluk olarak state’leri, event’leri ve belirli davranışları belirleyen merkezi bir rol oynar.
+    //	Yani distributed transaction’ı yönetecek olan sınıftır diyebiliriz.
+    //	Bir sınıfın state machine olabilmesi için MassTransitStateMachine<T> arayüzünü uygulaması gerekmektedir.
+    //	Generic olarak belirtilen T ise bir State Instance almaktadır.
     public class OrderStateMachine:MassTransitStateMachine<OrderStateInstance>
     {
         public Event<IOrderCreatedRequestEvent> OrderCreatedRequestEvent { get; set; }

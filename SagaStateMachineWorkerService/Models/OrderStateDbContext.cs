@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 
 namespace SagaStateMachineWorkerService.Models
 {
+    //State Machine’in verilerinin tutulacağı veritabanını yönetecek olan context nesnesidir.
+    //SagaDbContext abstract class’ından türemektedir.
     public class OrderStateDbContext : SagaDbContext
     {
         public OrderStateDbContext(DbContextOptions<OrderStateDbContext> options) : base(options)

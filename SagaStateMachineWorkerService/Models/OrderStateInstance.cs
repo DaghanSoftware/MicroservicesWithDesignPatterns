@@ -8,10 +8,22 @@ using System.Threading.Tasks;
 
 namespace SagaStateMachineWorkerService.Models
 {
+    //Bir state machine verisini temsil eden sınıftır.
+    //Misal olarak aynı anda yapılan iki farklı sipariş isteğinin her biri bir state instance olarak veritabanında tutulacaktır.
+    //Haliyle gelen bu istekleri birbirlerinden ayırt edebilmek için CorrelationId değeri kullanılmaktadır.
+    //Bu değer tekilleştirici niteliğe sahiptir.
+    //Bir sınıfın state instance olabilmesi için SagaStateMachineInstance arayüzünü uygulaması gerekmektedir.
+    //Orchestration implementasyonunda dört temel event vardır.Bu event’ler;
+
+    //Tetikleyici Event: İlgili service’i tetikleyecek/çalıştıracak/işlevsel hale getirecek olan event’tir.
+    //Başarılı Event: İşlevin başarıyla sonuçlandığını ifade eden event’tir.
+    //Başarısız Event: İşlevin başarısızlıkla sonuçlandığını ifade eden event’tir.
+    //Compensable Event: Yapılan işlemlerin geri alınmasını bildiren event’tir.
+    //Dolayısıyla gelen her tetikleyici event için yeni bir state instance oluşturulacak ve diğer event’ler de ise önceden oluşturulmuş state instance CorrelationId üzerinden tespit edilip üzerinden işlem gerçekleştirilecektir.
     public class OrderStateInstance : SagaStateMachineInstance
     {
-        //Her bir state machine instance'i için random CorrelationId üretilir.
-        //Saga state machine gelen binlerce sipariş requestini birbirinden ayırması için bu id'yi kullanıyor
+        // Her bir State Instance özünde bir siparişe özeldir. Haliyle bu State Instance'ları
+        // birbirinden ayırabilmek için CorrelationId(yani bildiğiniz unique id) kullanılmaktadır
         public Guid CorrelationId { get; set; }
         public string CurrentState { get; set; }
         public string BuyerId { get; set; }

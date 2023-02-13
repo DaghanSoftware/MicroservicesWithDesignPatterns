@@ -9,6 +9,9 @@ using System.Threading.Tasks;
 
 namespace SagaStateMachineWorkerService.Models
 {
+    //	Veritabanına kaydedilen State Instance’da ki property’lerin validasyon ayarlarının yapılmasını sağlayan sınıftır.
+    //	SagaClassMap<T> abstract class’ından türemektedir.
+    //	Generic olan T parametresi bir State Instance alır.
     public class OrderStateMap:SagaClassMap<OrderStateInstance>
     {
         protected override void Configure(EntityTypeBuilder<OrderStateInstance> entity, ModelBuilder model)
