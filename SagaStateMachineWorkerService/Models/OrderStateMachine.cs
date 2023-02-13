@@ -1,4 +1,5 @@
 ﻿using MassTransit;
+using Shared;
 using Shared.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -35,6 +36,7 @@ namespace SagaStateMachineWorkerService.Models
                 context.Instance.TotalPrice = context.Data.Payment.TotalPrice;
 
             }).Then(context => { Console.WriteLine($"OrderCreatedRequestEvent before {context.Instance}"); })
+            .Publish(context=>new OrderCreatedEvent(context.Instance.CorrelationId) {OrderItems=context.Data.OrderItems})
             .TransitionTo(OrderCreated)
             .Then(context => { Console.WriteLine($"OrderCreatedRequestEvent after {context.Instance}"); }));
         }
