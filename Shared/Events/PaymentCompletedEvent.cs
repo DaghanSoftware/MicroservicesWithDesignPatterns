@@ -2,6 +2,7 @@
 
 namespace Shared.Events
 {
+    //Ödeme işleminin başarılı olduğunu ifade eden event’tir.
     public class PaymentCompletedEvent : IPaymentCompletedEvent
     {
         public PaymentCompletedEvent(Guid correlationId)

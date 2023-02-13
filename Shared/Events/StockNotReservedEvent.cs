@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace Shared.Events
 {
+    //Stok işlemlerinin başarısız olduğunu ifade eden event’tir.
     public class StockNotReservedEvent : IStockNotReservedEvent
     {
         public StockNotReservedEvent(Guid correlationId)

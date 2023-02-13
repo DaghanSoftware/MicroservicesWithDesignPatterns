@@ -2,6 +2,7 @@
 
 namespace Shared.Events
 {
+    //Ödeme işleminin başarısız olduğunu ifade eden event’tir.
     public class PaymentFailedEvent : IPaymentFailedEvent
     {
         public PaymentFailedEvent(Guid correlationId)

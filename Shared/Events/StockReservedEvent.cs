@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace Shared.Events
 {
+    //Stock.API‘da ilgili stok işlemlerinin başarıyla gerçekleştirildiğini ifade eden event’tir.
+    //CorrelatedBy<Guid> arayüzü sayesinde ‘CorrelationId’ property’si uygulanarak State Machine’de hangi
+    //instance’ın mevzu bahis olduğunu taşımaktadır.
     public class StockReservedEvent : IStockReservedEvent
     {
         public StockReservedEvent(Guid correlationId)

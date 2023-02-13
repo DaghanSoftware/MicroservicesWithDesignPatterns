@@ -18,6 +18,7 @@ namespace SagaStateMachineWorkerService.Models
     //	Generic olarak belirtilen T ise bir State Instance almaktadır.
     public class OrderStateMachine:MassTransitStateMachine<OrderStateInstance>
     {
+        //State Machine üzerinde bir event’i temsil edebilmek için 22. satırdaki gibi Event<T> türünden bir property oluşturulmalıdır
         public Event<IOrderCreatedRequestEvent> OrderCreatedRequestEvent { get; set; }
         public Event<IStockReservedEvent> StockReservedEvent { get; set; }
         public Event<IStockNotReservedEvent> StockNotReservedEvent { get; set; }
@@ -31,16 +32,33 @@ namespace SagaStateMachineWorkerService.Models
         public State PaymentFailed { get; private set; }
         public OrderStateMachine()
         {
+            //State Instance'da ki hangi property'nin sipariş sürecindeki state'i tutacağı bildiriliyor.
+            //Yani artık tüm event'ler CurrentState property'sin de tutulacaktır!
             InstanceState(x => x.CurrentState);
+
+            //Eğer gelen event OrderStartedEvent ise CorrelateBy metodu ile veritabanında(database)
+            //tutulan Order State Instance'da ki OrderId'si ile gelen event'te ki(@event) OrderId'yi
+            //kıyasla. Bu kıyas neticesinde eğer ilgili instance varsa kaydetme. Yani yeni bir korelasyon
+            //üretme! Yok eğer yoksa yeni bir korelasyon üret(SelectId)
             Event(() => OrderCreatedRequestEvent, y => y.CorrelateBy<int>(x => x.OrderId, z => z.Message.OrderId).SelectId(context =>
             Guid.NewGuid()));
 
+            //StockReservedEvent fırlatıldığında veritabanındaki hangi correlationid değerine sahip state
+            //instance'ın state'ini değiştirecek bunu belirtmiş olduk!
             Event(() => StockReservedEvent, x => x.CorrelateById(y => y.Message.CorrelationId));
 
+            //StockNotReservedEvent fırlatıldığında veritabanındaki hangi correlationid değerine sahip state
+            //instance'ın state'ini değiştirecek bunu belirtmiş olduk!
             Event(() => StockNotReservedEvent, x => x.CorrelateById(y => y.Message.CorrelationId));
 
+            // //PaymentCompletedEvent fırlatıldığında veritabanındaki hangi correlationid değerine sahip state
+            //instance'ın state'ini değiştirecek bunu belirtmiş olduk!
             Event(() => PaymentCompletedEvent, x => x.CorrelateById(y => y.Message.CorrelationId));
 
+            //İlgili instance'ın state'i initial/başlangıç aşamasındayken(Initially) 'OrderStartedEvent'
+            //tetikleyici event'i geldiyse(When) şu işlemleri yap(Then). Ardından bu işlemler yapıldıktan
+            //sonra ilgili instance'ı 'OrderCreated' state'ine geçir(TransitionTo). Ardından 'Stock.API'ı
+            //tetikleyebilmek/haberdar edebilmek için 'OrderCreatedEvent' event'ini gönder(Publish/Send)
             Initially(When(OrderCreatedRequestEvent).Then(context =>
             {
                 context.Instance.BuyerId = context.Data.BuyerId;
@@ -57,6 +75,10 @@ namespace SagaStateMachineWorkerService.Models
             .TransitionTo(OrderCreated)
             .Then(context => { Console.WriteLine($"OrderCreatedRequestEvent after {context.Instance}"); }));
 
+
+            //Eğer state 'OrderCreated' ise(During) ve o anda 'StockReservedEvent' event'i geldiyse(When)
+            //o zaman state'i 'StockReserved' olarak değiştir(TransitionTo) ve belirtilen kuyruğa 
+            //'PaymentStartedEvent' event'ini gönder(Send)
             During(OrderCreated,
                 When(StockReservedEvent)
                 .TransitionTo(StockReserved)
@@ -75,17 +97,31 @@ namespace SagaStateMachineWorkerService.Models
                     BuyerId = context.Instance.BuyerId
                 })
                 .Then(context => { Console.WriteLine($"StockNotReservedEvent after {context.Instance}"); }),
+
+                //Yok eğer State 'OrderCreated' iken(During) 'StockNotReservedEvent' event'i geldiyse(When)
+                //o zaman state'i 'StockNotReserved' olarak değiştir(TransitionTo) ve belirtilen
+                //kuyruğa 'OrderFailedEvent' event'ini gönder.
                 When(StockNotReservedEvent).TransitionTo(StockNotReserved).Publish(context=>new OrderRequestFailedEvent()
                 {
                     OrderId= context.Instance.OrderId,Reason=context.Data.Reason
                 }).Then(context => { Console.WriteLine($"StockNotReservedEvent after {context.Instance}"); }));
 
+
+            //Eğer ilgili sipariş 'StockReserved' durumunda iken(During) 'PaymentCompletedEvent' event'i geldiyse(When)
+            //'PaymentCompleted' state'i olarak değiştir(TransitionTo) ve ardından belirtilen kuyruğa 
+            //'OrderRequestCompletedEvent' event'ini gönder. Ayrıca artık bu sipariş başarılı olacağından dolayı
+            //State Machine tarafından bu State Instance'ı başarıyla sonlandır(Finalize) Haliyle böylece sonuç olarak
+            //ilgili instance'ın state'inde 'Final' yazacaktır!
             During(StockReserved, When(PaymentCompletedEvent).TransitionTo(PaymentCompleted).Publish(context=>new OrderRequestCompletedEvent()
             {
                 OrderId = context.Instance.OrderId
             })
             .Then(context => { Console.WriteLine($"PaymentCompletedEvent after {context.Instance}"); })
             .Finalize(),
+
+            //Yok eğer mevcut state 'StockReserved' iken(During) 'PaymentFailedEvent' event'i gelirse(When)
+            //o zaman state'i 'PaymentFailed' olarak değiştir(TransitionTo) ve belirtilen kuyruklara 
+            //'OrderRequestFailedEvent' ve 'StockRollBackMessage' event'lerini gönder(Send).
             When(PaymentFailedEvent)
             .Publish(context => new OrderRequestFailedEvent()
             {
@@ -99,6 +135,8 @@ namespace SagaStateMachineWorkerService.Models
             .TransitionTo(PaymentFailed)
             .Then(context => { Console.WriteLine($"PaymentFailedEvent after {context.Instance}"); }));
 
+            
+            //Finalize olan instance'ları veritabanından kaldırıyoruz!
             SetCompletedWhenFinalized();
 
         }

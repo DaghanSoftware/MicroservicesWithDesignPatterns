@@ -7,6 +7,10 @@ using System.Threading.Tasks;
 
 namespace Shared.Events
 {
+    //Tetikleyici event’tir. Bir sipariş sürecinin başladığını ifade eder.
+    //Haliyle tetikleyici olduğu için State Machine’de bir Order’a karşılık State Instance satırı ekleyecektir.
+    //Dikkat ederseniz içerisinde ‘OrderId’, ‘BuyerId’ gibi State Instance’da belirttiğimiz verilere karşılık property’ler mevcuttur.
+    //Haliyle bir sipariş süreci bu veriler eşliğinde başlatılacaktır.
     public class OrderCreatedRequestEvent : IOrderCreatedRequestEvent
     {
         public int OrderId { get; set; }

@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 
 namespace Shared.Events
 {
+    //Siparişin başarısız olduğunu ifade eden event’tir.
+    //Order.API tarafından ilgili siparişin Fail durumuna çekilmesini sağlayacaktır.
     public class OrderRequestFailedEvent : IOrderRequestFailedEvent
     {
         public int OrderId { get ; set ; }

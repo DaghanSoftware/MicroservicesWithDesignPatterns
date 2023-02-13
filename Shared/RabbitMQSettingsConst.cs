@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 
 namespace Shared
 {
+    //Servislerimizle State Machine arasındaki iletişimleri sağlayacak olan kuyruk isimlerinin ayarlanması için
+    //Shared class library’sinde ‘RabbitMQSettingsConst.cs’ isminde bir static class oluşturalım ve içerisini aşağıdaki gibi dolduralım.
     public class RabbitMQSettingsConst
     {
         public const string OrderSaga = "order-saga-queue";
@@ -15,18 +17,5 @@ namespace Shared
         public const string OrderRequestFailedEventQueueName = "order-request-failed-queue";
         public const string StockRollBackMessageQueueName = "stock-rollback-message-queue";
 
-
-
-
-
-        public const string StockReservedEventQueueName = "stock-reserved-queue";
-
-        public const string StockPaymentFailedEventQueueName = "stock-payment-failed-queue";
-
-        
-
-        public const string OrderPaymentFailedEventQueueName = "order-payment-failed-queue";
-
-        public const string OrderStockNotReservedQueueName = "order-stock-not-reserved-queue";
     }
 }

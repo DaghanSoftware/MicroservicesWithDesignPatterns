@@ -9,6 +9,7 @@ namespace Shared.Events
 {
     public class StockReservedRequestPayment : IStockReservedRequestPayment
     {
+        //Stock.API‘da işlemler başarılıysa eğer Payment.API‘ı tetikletecek olan event’tir.
         public StockReservedRequestPayment(Guid correlationId)
         {
             CorrelationId = correlationId;
