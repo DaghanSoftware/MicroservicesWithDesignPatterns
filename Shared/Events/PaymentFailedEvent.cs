@@ -1,6 +1,6 @@
 ﻿using Shared.Interfaces;
 
-namespace Shared
+namespace Shared.Events
 {
     public class PaymentFailedEvent : IPaymentFailedEvent
     {
@@ -9,7 +9,7 @@ namespace Shared
             CorrelationId = correlationId;
         }
 
-        public string Reason { get ; set ; }
+        public string Reason { get; set; }
         public List<OrderItemMessage> OrderItems { get; set; }
 
         public Guid CorrelationId { get; }

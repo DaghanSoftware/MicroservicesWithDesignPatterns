@@ -19,9 +19,12 @@ namespace SagaStateMachineWorkerService.Models
     {
         public Event<IOrderCreatedRequestEvent> OrderCreatedRequestEvent { get; set; }
         public Event<IStockReservedEvent> StockReservedEvent { get; set; }
+        public Event<IStockNotReservedEvent> StockNotReservedEvent { get; set; }
         public Event<IPaymentCompletedEvent> PaymentCompletedEvent { get; set; }
+        
         public State OrderCreated { get; private set; }
         public State StockReserved { get; private set; }
+        public State StockNotReserved { get; private set; }
         public State PaymentCompleted { get; private set; }
         public OrderStateMachine()
         {
@@ -30,6 +33,8 @@ namespace SagaStateMachineWorkerService.Models
             Guid.NewGuid()));
 
             Event(() => StockReservedEvent, x => x.CorrelateById(y => y.Message.CorrelationId));
+
+            Event(() => StockNotReservedEvent, x => x.CorrelateById(y => y.Message.CorrelationId));
 
             Event(() => PaymentCompletedEvent, x => x.CorrelateById(y => y.Message.CorrelationId));
 
@@ -66,7 +71,11 @@ namespace SagaStateMachineWorkerService.Models
                     },
                     BuyerId = context.Instance.BuyerId
                 })
-                .Then(context => { Console.WriteLine($"StockReservedEvent after {context.Instance}"); }));
+                .Then(context => { Console.WriteLine($"StockNotReservedEvent after {context.Instance}"); }),
+                When(StockNotReservedEvent).TransitionTo(StockNotReserved).Publish(context=>new OrderRequestFailedEvent()
+                {
+                    OrderId= context.Instance.OrderId,Reason=context.Data.Reason
+                }).Then(context => { Console.WriteLine($"StockNotReservedEvent after {context.Instance}"); }));
 
             During(StockReserved, When(PaymentCompletedEvent).TransitionTo(PaymentCompleted).Publish(context=>new OrderRequestCompletedEvent()
             {
