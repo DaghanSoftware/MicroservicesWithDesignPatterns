@@ -2,6 +2,7 @@
 using Shared;
 using Shared.Events;
 using Shared.Interfaces;
+using Shared.Messages;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,11 +22,13 @@ namespace SagaStateMachineWorkerService.Models
         public Event<IStockReservedEvent> StockReservedEvent { get; set; }
         public Event<IStockNotReservedEvent> StockNotReservedEvent { get; set; }
         public Event<IPaymentCompletedEvent> PaymentCompletedEvent { get; set; }
-        
+        public Event<IPaymentFailedEvent> PaymentFailedEvent { get; set; }
+
         public State OrderCreated { get; private set; }
         public State StockReserved { get; private set; }
         public State StockNotReserved { get; private set; }
         public State PaymentCompleted { get; private set; }
+        public State PaymentFailed { get; private set; }
         public OrderStateMachine()
         {
             InstanceState(x => x.CurrentState);
@@ -81,7 +84,22 @@ namespace SagaStateMachineWorkerService.Models
             {
                 OrderId = context.Instance.OrderId
             })
-            .Then(context => { Console.WriteLine($"PaymentCompletedEvent after {context.Instance}"); }).Finalize());
+            .Then(context => { Console.WriteLine($"PaymentCompletedEvent after {context.Instance}"); })
+            .Finalize(),
+            When(PaymentFailedEvent)
+            .Publish(context => new OrderRequestFailedEvent()
+            {
+                OrderId = context.Instance.OrderId,
+                Reason = context.Data.Reason
+            })
+            .Send(new Uri($"queue:{RabbitMQSettingsConst.StockRollBackMessageQueueName}"), context=>new StockRollBackMessage()
+            {
+                OrderItems = context.Data.OrderItems
+            })
+            .TransitionTo(PaymentFailed)
+            .Then(context => { Console.WriteLine($"PaymentFailedEvent after {context.Instance}"); }));
+
+            SetCompletedWhenFinalized();
 
         }
     }
