@@ -3,18 +3,20 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33213.308
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Order.API", "Order.API\Order.API.csproj", "{771002F5-89DF-4174-89F6-602E9F0A90A8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Order.API", "Order.API\Order.API.csproj", "{771002F5-89DF-4174-89F6-602E9F0A90A8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Payment.API", "Payment.API\Payment.API.csproj", "{6F4CA2CF-7E07-454F-9081-19B5C1AD308F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Payment.API", "Payment.API\Payment.API.csproj", "{6F4CA2CF-7E07-454F-9081-19B5C1AD308F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Stock.API", "Stock.API\Stock.API.csproj", "{5C629471-0507-4D87-BBA2-7B46DA43CCB5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Stock.API", "Stock.API\Stock.API.csproj", "{5C629471-0507-4D87-BBA2-7B46DA43CCB5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared", "Shared\Shared.csproj", "{D53435C1-BEA9-4A2B-B60C-4D9B005A4A56}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shared", "Shared\Shared.csproj", "{D53435C1-BEA9-4A2B-B60C-4D9B005A4A56}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{91CA6FF8-6F43-4055-896B-796C5DD9B70B}"
 	ProjectSection(SolutionItems) = preProject
 		Ports.txt = Ports.txt
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SagaStateMachineWorkerService", "SagaStateMachineWorkerService\SagaStateMachineWorkerService.csproj", "{1BD6E38F-24E0-462E-A633-1718ADA4C2A9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -38,6 +40,10 @@ Global
 		{D53435C1-BEA9-4A2B-B60C-4D9B005A4A56}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D53435C1-BEA9-4A2B-B60C-4D9B005A4A56}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D53435C1-BEA9-4A2B-B60C-4D9B005A4A56}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1BD6E38F-24E0-462E-A633-1718ADA4C2A9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1BD6E38F-24E0-462E-A633-1718ADA4C2A9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1BD6E38F-24E0-462E-A633-1718ADA4C2A9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1BD6E38F-24E0-462E-A633-1718ADA4C2A9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
