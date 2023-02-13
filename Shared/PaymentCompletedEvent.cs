@@ -1,8 +1,14 @@
-﻿namespace Shared
+﻿using Shared.Interfaces;
+
+namespace Shared
 {
-    public class PaymentCompletedEvent
+    public class PaymentCompletedEvent : IPaymentCompletedEvent
     {
-        public int OrderId { get; set; }
-        public string BuyerId { get; set; }
+        public PaymentCompletedEvent(Guid correlationId)
+        {
+            CorrelationId = correlationId;
+        }
+
+        public Guid CorrelationId { get; set; }
     }
 }

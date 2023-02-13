@@ -54,8 +54,11 @@ namespace SagaStateMachineWorkerService.Models
                     { 
                         CardName=context.Instance.CardName,
                         CardNumber = context.Instance.CardNumber,
-                        CVV = context.Instance.CVV
-                    }
+                        CVV = context.Instance.CVV,
+                        Expiration = context.Instance.Expiration,
+                        TotalPrice = context.Instance.TotalPrice
+                    },
+                    BuyerId = context.Instance.BuyerId
                 })
                 .Then(context => { Console.WriteLine($"StockReservedEvent after {context.Instance}"); }));
         }

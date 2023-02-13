@@ -11,5 +11,6 @@ namespace Shared.Interfaces
     {
         public PaymentMessage Payment { get; set; }
         public List<OrderItemMessage> OrderItems { get; set; }
+        public string BuyerId { get; set; }
     }
 }
