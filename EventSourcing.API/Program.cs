@@ -1,3 +1,4 @@
+using EventSourcing.API.BackgroundServicee;
 using EventSourcing.API.EventStores;
 using EventSourcing.API.Models;
 using MediatR;
@@ -18,6 +19,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddEventStore(builder.Configuration);
 builder.Services.AddSingleton<ProductStream>();
 builder.Services.AddMediatR(Assembly.GetExecutingAssembly());
+builder.Services.AddHostedService<ProductReadModelEventStore>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
