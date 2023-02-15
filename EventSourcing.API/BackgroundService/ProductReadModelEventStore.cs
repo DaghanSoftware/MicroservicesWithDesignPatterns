@@ -1,18 +1,17 @@
 ﻿using EventSourcing.API.EventStores;
-using EventStore.ClientAPI;
-using Microsoft.Extensions.Hosting;
-using Newtonsoft.Json;
-using System;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
+using EventSourcing.API.Models;
 using EventSourcing.Shared.Events;
+using EventStore.ClientAPI;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
-using EventSourcing.API.Models;
 
 namespace EventSourcing.API.BackgroundServicee
 {
@@ -39,21 +38,27 @@ namespace EventSourcing.API.BackgroundServicee
         }
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            await _eventStoreConnection.ConnectToPersistentSubscriptionAsync(ProductStream.StreamName, ProductStream.GroupName, EventAppeared,autoAck:false);
-            throw new NotImplementedException();
+            await _eventStoreConnection.ConnectToPersistentSubscriptionAsync(ProductStream.StreamName, ProductStream.GroupName, EventAppeared, autoAck: false);
+            await Task.Delay(-1, stoppingToken);
         }
-        private async Task EventAppeared(EventStorePersistentSubscriptionBase arg1,ResolvedEvent arg2)
+        private async Task EventAppeared(EventStorePersistentSubscriptionBase arg1, ResolvedEvent arg2)
         {
-            _logger.LogInformation("The message processing...");
-            var type = Type.GetType($"{Encoding.UTF8.GetString(arg2.Event.Metadata)},EventSourcing.Shared");
+            var type = Type.GetType($"{Encoding.UTF8.GetString(arg2.Event.Metadata)}, EventSourcing.Shared");
+            _logger.LogInformation($"The Message processing... : {type.ToString()}");
             var eventData = Encoding.UTF8.GetString(arg2.Event.Data);
-            var @event = System.Text.Json.JsonSerializer.Deserialize(eventData, type);
+
+            var @event = JsonSerializer.Deserialize(eventData, type);
+
             using var scope = _serviceProvider.CreateScope();
+
             var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
             Product product = null;
+
             switch (@event)
             {
                 case ProductCreatedEvent productCreatedEvent:
+
                     product = new Product()
                     {
                         Name = productCreatedEvent.Name,
@@ -62,34 +67,37 @@ namespace EventSourcing.API.BackgroundServicee
                         Stock = productCreatedEvent.Stock,
                         UserId = productCreatedEvent.UserId
                     };
-                    if (product != null)
-                    {
-                        context.Products.Add(product);
-                    }
+                    context.Products.Add(product);
                     break;
+
                 case ProductNameChangedEvent productNameChangedEvent:
+
                     product = context.Products.Find(productNameChangedEvent.Id);
-                    if (product!=null)
+                    if (product != null)
                     {
                         product.Name = productNameChangedEvent.ChangedName;
                     }
                     break;
+
                 case ProductPriceChangedEvent productPriceChangedEvent:
-                    product = context.Products.Find(productPriceChangedEvent.Id); 
-                    if (product!=null) 
+                    product = context.Products.Find(productPriceChangedEvent.Id);
+                    if (product != null)
                     {
                         product.Price = productPriceChangedEvent.ChangedPrice;
                     }
                     break;
+
                 case ProductDeletedEvent productDeletedEvent:
                     product = context.Products.Find(productDeletedEvent.Id);
-                    if (product!=null)
+                    if (product != null)
                     {
                         context.Products.Remove(product);
                     }
                     break;
             }
+
             await context.SaveChangesAsync();
+
             arg1.Acknowledge(arg2.Event.EventId);
         }
     }
