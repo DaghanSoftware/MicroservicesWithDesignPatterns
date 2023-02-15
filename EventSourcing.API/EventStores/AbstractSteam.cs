@@ -15,9 +15,9 @@ namespace EventSourcing.API.EventStores
         private string _streamName { get; }
         private readonly IEventStoreConnection _eventStoreConnection;
 
-        protected AbstractSteam(string streamName, IEventStoreConnection eventStoreConnection)
+        protected AbstractSteam(string StreamName, IEventStoreConnection eventStoreConnection)
         {
-            _streamName = streamName;
+            _streamName = StreamName;
             _eventStoreConnection = eventStoreConnection;
         }
         public async Task SaveAsync()

@@ -9,6 +9,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddEventStore(builder.Configuration);
+builder.Services.AddSingleton<ProductStream>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
