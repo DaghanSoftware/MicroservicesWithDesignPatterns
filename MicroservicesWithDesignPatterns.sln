@@ -5,6 +5,8 @@ VisualStudioVersion = 17.4.33213.308
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventSourcing.Shared", "EventSourcing.Shared\EventSourcing.Shared.csproj", "{2EF5F440-FEF4-433F-8B4A-9FB1E3D5C532}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventSourcing.API", "EventSourcing.API\EventSourcing.API.csproj", "{F3AEDB56-2E31-4A95-B463-409764AA79E7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{2EF5F440-FEF4-433F-8B4A-9FB1E3D5C532}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2EF5F440-FEF4-433F-8B4A-9FB1E3D5C532}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2EF5F440-FEF4-433F-8B4A-9FB1E3D5C532}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F3AEDB56-2E31-4A95-B463-409764AA79E7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F3AEDB56-2E31-4A95-B463-409764AA79E7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F3AEDB56-2E31-4A95-B463-409764AA79E7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F3AEDB56-2E31-4A95-B463-409764AA79E7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
